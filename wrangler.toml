@@ -1,0 +1,14 @@
+name = "public-api-worker"
+main = "src/index.ts"
+vars = { ENVIRONMENT = "dev" }
+compatibility_date = "2022-11-20"
+
+[env.master]
+name = "public-api-worker"
+main = "src/index.ts"
+vars = { ENVIRONMENT = "production" }
+
+[env.staging]
+name = "public-api-worker-stg"
+main = "src/index.ts"
+vars = { ENVIRONMENT = "staging" }
