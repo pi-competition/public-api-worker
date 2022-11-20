@@ -1,6 +1,7 @@
 import * as status from 'statuses';
 
 export function success(code: number, data?: any): Response {
+    if (status.empty[code]) return new Response(null, {status: code});
     return new Response(JSON.stringify({
         success: true,
         code,

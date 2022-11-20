@@ -1,5 +1,5 @@
 import {Env} from "../../index";
-import {success} from "../../utils";
+import {success} from "../../utils/utils";
 
 export default async function execute(
     request: Request,
