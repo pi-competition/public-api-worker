@@ -1,6 +1,7 @@
 import {Request, Router} from "itty-router";
 import {Env} from "../../../../index";
 import {error, success} from "../../../../utils/utils";
+import {getStatuses} from "../status";
 
 export const router = Router({base: `/api/cars`});
 
@@ -29,11 +30,9 @@ export default async function execute(
     env: Env,
     ctx: ExecutionContext
 ): Promise<Response> {
-    //junk data, will be useful at some point
-    return success(200, {
-        id: Number(request.params?.carId),
-        state: "online",
-        battery: Math.random() * 100,
-        uptime: Math.round(Math.random() * (Math.random() * 1000000))
-    });
+    const id = Number(request.params!.carId);
+    //TODO this should be a web request in the future to get 1 car, not a a request to another function
+    const status = (await getStatuses())
+        .filter((status) => status.id === id);
+    return success(200, status);
 }

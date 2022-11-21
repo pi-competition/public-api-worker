@@ -10,7 +10,7 @@ export interface Env {
 }
 
 async function registerRoutes() {
-	router.options("*", await import("./utils/cors").then((m) => m.default))
+	router.options("*", await import("./utils/cors").then((m) => m.default));
 	// root
 	router.get("/", await import("./routes/api").then((m) => m.default)).all("/", () => error(405));
 	// auth
@@ -36,7 +36,8 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
-		if(DISABLE) return error(503)
+		if (DISABLE) return error(503);
+		if (!new URL(request.url).pathname.startsWith("/api")) return error(418, "The requested resource is not available on this server."); //for non-api requests, requests should be sent to the pages domain
 		return await router.handle(request, env, ctx).catch(err => {
 			console.error(err);
 			return error(500)

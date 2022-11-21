@@ -1,6 +1,7 @@
 import {Env} from "../../../index";
 import {error, success} from "../../../utils/utils";
 import {validate} from "../../../utils/body";
+import {getStatuses} from "./status";
 
 const schema = {
     ids: []
@@ -29,10 +30,18 @@ export default async function execute(
     if (content.ids.length > 4) return error(400, "Too many cars specified");
     if (content.ids.length < 1) return error(400, "Specify at least one car");
 
-    if (content.ids.every(id => id >= 0 && id <= 3)) {
-        // TODO: Implement
-        return success(204);
-    } else {
-        return error(400, "One or more invalid car IDs specified");
+    let notReadyIds: number[] = (await getStatuses())
+        .filter((status) => status.state !== "online")
+        .map((status) => status.id);
+
+    for (let i = 0; i < content.ids.length; i++) {
+        let id = content.ids[i];
+        if (id < 0 || id > 3) return error(400, "One or more specified car IDs are invalid");
+        if (notReadyIds.includes(id)) return error(400, "The requested action cannot be performed on one or more of the specified cars at this time");
+        for (let j = i + 1; j < content.ids.length; j++) {
+            if (id === content.ids[j]) return error(400, "One or more specified car IDs are duplicates");
+        }
     }
+    return success(204)
+
 }
