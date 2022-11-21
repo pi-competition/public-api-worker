@@ -1,5 +1,5 @@
 import * as status from 'statuses';
-
+import { corsHeaders } from './cors';
 export function success(code: number, data?: any): Response {
     if (status.empty[code]) return new Response(null, {status: code});
     return new Response(JSON.stringify({
@@ -11,6 +11,7 @@ export function success(code: number, data?: any): Response {
         status: code,
         headers: {
             'content-type': 'application/json',
+            ...corsHeaders
         },
     });
 }
@@ -25,6 +26,7 @@ export function error(code: number, error?: any): Response {
         status: code,
         headers: {
             'content-type': 'application/json',
+            ...corsHeaders
         },
     });
 }
