@@ -9,6 +9,7 @@ export interface Env {
 }
 
 async function registerRoutes() {
+	router.options("*", await import("./utils/cors").then((m) => m.default))
 	// root
 	router.get("/", await import("./routes/api").then((m) => m.default)).all("/", () => error(405));
 	// auth
@@ -18,6 +19,7 @@ async function registerRoutes() {
 	router.post("/cars/reset-bulk", await import("./routes/api/cars/reset-bulk").then((m) => m.default)).all("/cars/reset-bulk", () => error(405));
 	// car ID middleware
 	router.all("/cars/:carId/*", await import("./routes/api/cars/#carId").then((m) => m.middleware));
+
 
 
 	router.all("*", async (request: Request, env: Env, ctx: ExecutionContext) => {
