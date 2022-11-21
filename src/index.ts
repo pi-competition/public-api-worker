@@ -2,6 +2,7 @@ import {Router} from 'itty-router'
 import {error} from "./utils/utils";
 
 const router = Router({base: "/api"});
+const DISABLE = false;
 
 export interface Env {
 	ENVIRONMENT: "dev" | "production" | "staging";
@@ -35,6 +36,7 @@ export default {
 		env: Env,
 		ctx: ExecutionContext
 	): Promise<Response> {
+		if(DISABLE) return error(503)
 		return await router.handle(request, env, ctx).catch(err => {
 			console.error(err);
 			return error(500)
