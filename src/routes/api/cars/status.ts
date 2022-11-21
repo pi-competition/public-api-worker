@@ -11,20 +11,20 @@ export default async function execute(
             {
                 id: 0,
                 state: "online",
-                battery: 100,
-                uptime: 3.6e+6
+                battery: Math.random() * 100,
+                uptime: Math.round(Math.random() * (Math.random() * 1000000))
             },
             {
                 id: 1,
                 state: "online",
-                battery: 98,
-                uptime: 720000
+                battery: Math.random() * 100,
+                uptime: Math.round(Math.random() * (Math.random() * 1000000))
             },
             {
                 id: 2,
                 state: "busy",
-                battery: 50,
-                uptime: 36000
+                battery: Math.random() * 100,
+                uptime: Math.round(Math.random() * (Math.random() * 1000000))
             },
             {
                 id: 3,
