@@ -1,7 +1,8 @@
 import * as status from 'statuses';
-import { corsHeaders } from './cors';
+import {corsHeaders} from './cors';
+
 export function success(code: number, data?: any): Response {
-    if (status.empty[code]) return new Response(null, {status: code});
+    if (status.empty[code]) return new Response(null, {status: code, headers: corsHeaders});
     return new Response(JSON.stringify({
         success: true,
         code,
