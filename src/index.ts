@@ -2,7 +2,7 @@ import {Router} from 'itty-router'
 import {error} from "./utils/utils";
 
 const router = Router({base: "/api"});
-const DISABLE = true;
+const DISABLE = false;
 
 export interface Env {
 	ENVIRONMENT: "dev" | "production" | "staging";
