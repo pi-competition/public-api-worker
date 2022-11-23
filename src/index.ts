@@ -1,5 +1,6 @@
 import {Router} from 'itty-router'
 import {error} from "./utils/utils";
+import {RemoteConfig} from "./interfaces/RemoteConfig";
 
 const router = Router({base: "/api"});
 const DISABLE = false;
@@ -7,6 +8,7 @@ const DISABLE = false;
 export interface Env {
 	ENVIRONMENT: "dev" | "production" | "staging";
 	COMMIT: string;
+	DB: KVNamespace;
 }
 
 async function registerRoutes() {
@@ -30,13 +32,31 @@ async function registerRoutes() {
 
 registerRoutes();
 
+
 export default {
 	async fetch(
 		request: Request,
 		env: Env,
-		ctx: ExecutionContext
+		ctx: ExecutionContext & RemoteConfig.AdditionalContext //slightly dodgy, execution context wasnt being used for anything else important ¯\_(ツ)_/¯
 	): Promise<Response> {
 		if (DISABLE) return error(503);
+		const config = await env.DB.get("remoteconfig");
+		ctx.config = config ? JSON.parse(config) : {};
+		if (ctx.config.maintenance) return error(503);
+		if (ctx.config.disabledRoutes) {
+			const found = ctx.config.disabledRoutes.find(route => {
+				return route.path === new URL(request.url).pathname && route.methods.includes(request.method);
+			});
+			if (found) return error(503, "Accessing this resource has been temporarily disabled. Please try again later.")
+		}
+
+		if (ctx.config.alwaysRequireAuth) {
+			const auth = request.headers.get("Authorization");
+			console.log(`"${auth}"`);
+			if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
+			if (auth !== "admin") return error(403, "You do not have permission to access this resource.");
+		}
+
 		if (!new URL(request.url).pathname.startsWith("/api")) return error(418, "The requested resource is not available on this server."); //for non-api requests, requests should be sent to the pages domain
 		return await router.handle(request, env, ctx).catch(err => {
 			console.error(err);
