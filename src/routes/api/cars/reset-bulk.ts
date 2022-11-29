@@ -30,7 +30,7 @@ export default async function execute(
     if (content.ids.length > 4) return error(400, "Too many cars specified");
     if (content.ids.length < 1) return error(400, "Specify at least one car");
 
-    let notReadyIds: number[] = (await getStatuses())
+    let notReadyIds: number[] = (await getStatuses(ctx))
         .filter((status) => status.state !== "online")
         .map((status) => status.id);
 
