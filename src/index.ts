@@ -22,6 +22,9 @@ async function registerRoutes() {
 	router.post("/cars/reset-bulk", await import("./routes/api/cars/reset-bulk").then((m) => m.default)).all("/cars/reset-bulk", () => error(405));
 	// car ID middleware
 	router.all("/cars/:carId/*", await import("./routes/api/cars/#carId").then((m) => m.middleware));
+	//central server
+	router.get("/server", await import("./routes/api/server").then((m) => m.default));
+	router.post("/server/restart", await import("./routes/api/server/restart").then((m) => m.default));
 
 
 
@@ -52,7 +55,6 @@ export default {
 
 		if (ctx.config.alwaysRequireAuth) {
 			const auth = request.headers.get("Authorization");
-			console.log(`"${auth}"`);
 			if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
 			if (auth !== "admin") return error(403, "You do not have permission to access this resource.");
 		}
