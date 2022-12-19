@@ -1,5 +1,5 @@
 import {Router} from 'itty-router'
-import {error} from "./utils/utils";
+import {error, success} from "./utils/utils";
 import {RemoteConfig} from "./interfaces/RemoteConfig";
 
 const router = Router({base: "/api"});
@@ -42,6 +42,9 @@ export default {
 		env: Env,
 		ctx: ExecutionContext & RemoteConfig.AdditionalContext //slightly dodgy, execution context wasnt being used for anything else important ¯\_(ツ)_/¯
 	): Promise<Response> {
+		if(request.method === "OPTIONS") {
+			return success(204)
+		}
 		if (DISABLE) return error(503);
 		const config = await env.DB.get("remoteconfig");
 		ctx.config = config ? JSON.parse(config) : {};
