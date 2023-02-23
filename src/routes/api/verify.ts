@@ -24,7 +24,7 @@ export default async function execute(
     const valid = validate(schema, content);
     if (valid !== true) return valid;
 
-    if (content.password !== "admin") return error(401, "Password is incorrect"); //TODO change this
+    if (content.password !== "admin2") return error(401, "Password is incorrect"); //TODO change this
 
     return success(204);
 }
