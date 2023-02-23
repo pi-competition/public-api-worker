@@ -1,5 +1,5 @@
 import {Router} from 'itty-router'
-import {error} from "./utils/utils";
+import {error, success} from "./utils/utils";
 import {RemoteConfig} from "./interfaces/RemoteConfig";
 
 const router = Router({base: "/api"});
@@ -22,6 +22,9 @@ async function registerRoutes() {
 	router.post("/cars/reset-bulk", await import("./routes/api/cars/reset-bulk").then((m) => m.default)).all("/cars/reset-bulk", () => error(405));
 	// car ID middleware
 	router.all("/cars/:carId/*", await import("./routes/api/cars/#carId").then((m) => m.middleware));
+	//central server
+	router.get("/server", await import("./routes/api/server").then((m) => m.default));
+	router.post("/server/restart", await import("./routes/api/server/restart").then((m) => m.default));
 
 
 
@@ -39,6 +42,9 @@ export default {
 		env: Env,
 		ctx: ExecutionContext & RemoteConfig.AdditionalContext //slightly dodgy, execution context wasnt being used for anything else important ¯\_(ツ)_/¯
 	): Promise<Response> {
+		if(request.method === "OPTIONS") {
+			return success(204)
+		}
 		if (DISABLE) return error(503);
 		const config = await env.DB.get("remoteconfig");
 		ctx.config = config ? JSON.parse(config) : {};
@@ -52,7 +58,6 @@ export default {
 
 		if (ctx.config.alwaysRequireAuth) {
 			const auth = request.headers.get("Authorization");
-			console.log(`"${auth}"`);
 			if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
 			if (auth !== "admin") return error(403, "You do not have permission to access this resource.");
 		}
