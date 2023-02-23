@@ -13,5 +13,6 @@ export declare module RemoteConfig {
         alwaysRequireAuth: boolean;
         allCarsStatus: "online" | "offline" | "busy";
         disabledRoutes: DisabledRoute[];
+        password: string;
     }
 }

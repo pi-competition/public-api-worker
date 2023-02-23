@@ -3,7 +3,7 @@ import {error, success} from "../../../../utils/utils";
 import {validate} from "../../../../utils/body";
 import {getStatuses} from "../status";
 import * as Itty from "itty-router";
-import { RemoteConfig } from "../../../../interfaces/RemoteConfig";
+import {RemoteConfig} from "../../../../interfaces/RemoteConfig";
 
 const schema = {};
 
@@ -14,7 +14,7 @@ export default async function execute(
 ): Promise<Response> {
     const auth = request.headers.get("Authorization");
     if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
-    if (auth !== "admin") return error(403, "You do not have permission to access this resource.");
+    if (auth !== ctx.config.password) return error(403, "You do not have permission to access this resource.");
 
     let content: any;
     try {

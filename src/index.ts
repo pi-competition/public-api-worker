@@ -59,7 +59,7 @@ export default {
 		if (ctx.config.alwaysRequireAuth) {
 			const auth = request.headers.get("Authorization");
 			if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
-			if (auth !== "admin") return error(403, "You do not have permission to access this resource.");
+			if (auth !== ctx.config.password) return error(403, "You do not have permission to access this resource.");
 		}
 
 		if (!new URL(request.url).pathname.startsWith("/api")) return error(418, "The requested resource is not available on this server."); //for non-api requests, requests should be sent to the pages domain
