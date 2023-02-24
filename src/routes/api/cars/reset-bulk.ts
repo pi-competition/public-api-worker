@@ -2,6 +2,7 @@ import {Env} from "../../../index";
 import {error, success} from "../../../utils/utils";
 import {validate} from "../../../utils/body";
 import {getStatuses} from "./status";
+import {RemoteConfig} from "../../../interfaces/RemoteConfig";
 
 const schema = {
     ids: []
@@ -15,8 +16,12 @@ type Schema = {
 export default async function execute(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext & RemoteConfig.AdditionalContext
 ): Promise<Response> {
+    const auth = request.headers.get("Authorization");
+    if (!auth) return error(401, "You must provide authentication credentials to access this resource.");
+    if (auth !== ctx.config.password) return error(403, "You do not have permission to access this resource.");
+
     let content: Schema;
     try {
         content = await request.json();
@@ -30,7 +35,7 @@ export default async function execute(
     if (content.ids.length > 4) return error(400, "Too many cars specified");
     if (content.ids.length < 1) return error(400, "Specify at least one car");
 
-    let notReadyIds: number[] = (await getStatuses())
+    let notReadyIds: number[] = (await getStatuses(ctx))
         .filter((status) => status.state !== "online")
         .map((status) => status.id);
 

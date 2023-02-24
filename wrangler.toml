@@ -2,13 +2,22 @@ name = "public-api-worker"
 main = "src/index.ts"
 vars = { ENVIRONMENT = "dev" }
 compatibility_date = "2022-11-20"
+kv_namespaces = [
+  { binding = "DB", id = "a36a560040de419db25a52f41aa7da46", preview_id = "540e5da8cdbe410f9753c670f1483ad7" },
+]
 
 [env.master]
 name = "public-api-worker"
 main = "src/index.ts"
 vars = { ENVIRONMENT = "production" }
+kv_namespaces = [
+  { binding = "DB", id = "a36a560040de419db25a52f41aa7da46", preview_id = "540e5da8cdbe410f9753c670f1483ad7" },
+]
 
 [env.staging]
 name = "public-api-worker-stg"
 main = "src/index.ts"
 vars = { ENVIRONMENT = "staging" }
+kv_namespaces = [
+  { binding = "DB", id = "0d68c367240d44f6ae3aea1104ef287b" }
+]

@@ -1,6 +1,7 @@
 import {Env} from "../../index";
 import {error, success} from "../../utils/utils";
 import {validate} from "../../utils/body";
+import {RemoteConfig} from "../../interfaces/RemoteConfig";
 
 const schema = {
     password: String
@@ -13,7 +14,7 @@ type Schema = {
 export default async function execute(
     request: Request,
     env: Env,
-    ctx: ExecutionContext
+    ctx: ExecutionContext & RemoteConfig.AdditionalContext
 ): Promise<Response> {
     let content: Schema;
     try {
@@ -24,7 +25,7 @@ export default async function execute(
     const valid = validate(schema, content);
     if (valid !== true) return valid;
 
-    if (content.password !== "admin") return error(401, "Password is incorrect"); //TODO change this
+    if (content.password !== ctx.config.password) return error(401, "Password is incorrect"); //TODO change this
 
     return success(204);
 }
