@@ -20,9 +20,13 @@ async function registerRoutes() {
 	// cars
 	router.get("/cars/status", await import("./routes/api/cars/status").then((m) => m.default)).all("/cars/status", () => error(405));
 	router.post("/cars/reset-bulk", await import("./routes/api/cars/reset-bulk").then((m) => m.default)).all("/cars/reset-bulk", () => error(405));
+	router.post("/cars/start", await import("./routes/api/cars/start").then((m) => m.default)).all("/cars/start", () => error(405));
+	router.post("/cars/stop", await import("./routes/api/cars/stop").then((m) => m.default)).all("/cars/stop", () => error(405));
+
+
 	// car ID middleware
 	router.all("/cars/:carId/*", await import("./routes/api/cars/#carId").then((m) => m.middleware));
-	//central server
+	//central server 
 	router.get("/server", await import("./routes/api/server").then((m) => m.default));
 	router.post("/server/restart", await import("./routes/api/server/restart").then((m) => m.default));
 

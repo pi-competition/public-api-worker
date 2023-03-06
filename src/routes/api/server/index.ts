@@ -14,19 +14,7 @@ export default async function execute(
             {
                 id: 0,
                 powered: true
-            },
-            {
-                id: 1,
-                powered: true
-            },
-            {
-                id: 2,
-                powered: true
-            },
-            {
-                id: 3,
-                powered: false
-            },
+            }
         ]
     });
 }
