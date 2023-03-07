@@ -27,8 +27,9 @@ async function registerRoutes() {
 	// car ID middleware
 	router.all("/cars/:carId/*", await import("./routes/api/cars/#carId").then((m) => m.middleware));
 	//central server 
-	router.get("/server", await import("./routes/api/server").then((m) => m.default));
-	router.post("/server/restart", await import("./routes/api/server/restart").then((m) => m.default));
+	router.get("/server", await import("./routes/api/server").then((m) => m.default)).all("/server", () => error(405));
+	router.post("/server/restart", await import("./routes/api/server/restart").then((m) => m.default)).all("/server/restart", () => error(405));
+	router.post("/server/refresh_camera", await import("./routes/api/server/refresh_camera").then((m) => m.default)).all("/server/refresh_camera", () => error(405));
 
 
 
